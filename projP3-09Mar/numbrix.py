@@ -26,7 +26,11 @@ class NumbrixState:
 
 class Board:
     """ Representação interna de um tabuleiro de Numbrix. """
-    
+
+    def __init__(self, list_board, size):
+        self.list_board = list_board
+        self.size = size
+
     def get_number(self, row: int, col: int) -> int:
         """ Devolve o valor na respetiva posição do tabuleiro. """
         # TODO
@@ -51,14 +55,17 @@ class Board:
         list_board = []
         f = open(filename)
         for line in f: 
-            list = []
-            board_line = line.split()
-            list = []
-            for x in board_line:
-                list.append(x)
-            list_board.append(list)
+                list = []
+                board_line = line.split()
+                list = []
+                for x in board_line:
+                    list.append(x)
+                list_board.append(list)
         for row in list_board:
             print (row )
+
+        Board(list_board, list_board[0][0])
+        return Board
 
     # TODO: outros metodos da classe
 
@@ -99,5 +106,5 @@ class Numbrix(Problem):
 
 
 if __name__ == "__main__":
-    Board.parse_instance("test.txt")    
+    Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/test.txt")    
     pass
