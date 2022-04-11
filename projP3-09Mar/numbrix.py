@@ -32,13 +32,13 @@ class Board:
         # TODO
         pass
     
-    def adjacent_vertical_numbers(self, row: int, col: int) -> (int, int):
-        """ Devolve os valores imediatamente abaixo e acima, 
-        respectivamente. """
+   # def adjacent_vertical_numbers(self, row: int, col: int) -> (int, int):
+    #    """ Devolve os valores imediatamente abaixo e acima, 
+     #   respectivamente. """
         # TODO
         pass
     
-    def adjacent_horizontal_numbers(self, row: int, col: int) -> (int, int):
+  #  def adjacent_horizontal_numbers(self, row: int, col: int) -> (int, int):
         """ Devolve os valores imediatamente à esquerda e à direita, 
         respectivamente. """
         # TODO
@@ -48,8 +48,17 @@ class Board:
     def parse_instance(filename: str):
         """ Lê o ficheiro cujo caminho é passado como argumento e retorna
         uma instância da classe Board. """
-        # TODO
-        pass
+        list_board = []
+        f = open(filename)
+        for line in f: 
+            list = []
+            board_line = line.split()
+            list = []
+            for x in board_line:
+                list.append(x)
+            list_board.append(list)
+        for row in list_board:
+            print (row )
 
     # TODO: outros metodos da classe
 
@@ -90,9 +99,5 @@ class Numbrix(Problem):
 
 
 if __name__ == "__main__":
-    # TODO:
-    # Ler o ficheiro de input de sys.argv[1],
-    # Usar uma técnica de procura para resolver a instância,
-    # Retirar a solução a partir do nó resultante,
-    # Imprimir para o standard output no formato indicado.
+    Board.parse_instance("test.txt")    
     pass
