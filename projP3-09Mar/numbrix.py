@@ -6,6 +6,7 @@
 # 00000 Nome1
 # 00000 Nome2
 
+import rlcompleter
 import sys
 from search import Problem, Node, astar_search, breadth_first_tree_search, depth_first_tree_search, greedy_search, recursive_best_first_search
 
@@ -31,21 +32,45 @@ class Board:
         self.list_board = list_board
         self.size = size
 
+    def get_list(self):
+        return self._list_board
+
+    def set_list(self, x):
+        self._list_board =x
+
+    def get_size(self):
+        return self._size
+
+    def set_size(self,x):
+        self._size=x
+
     def get_number(self, row: int, col: int) -> int:
         """ Devolve o valor na respetiva posição do tabuleiro. """
-        # TODO
+        return self.list_board[row + 1][col]
+
         pass
     
-   # def adjacent_vertical_numbers(self, row: int, col: int) -> (int, int):
-    #    """ Devolve os valores imediatamente abaixo e acima, 
-     #   respectivamente. """
-        # TODO
+    def adjacent_vertical_numbers(self, row: int, col: int) -> (int, int):
+        """ Devolve os valores imediatamente abaixo e acima, 
+        respectivamente. """
+        if (col == 0):
+            return (None, int(self.list_board[row][col+1]))
+        elif (col == self.size-1):
+            return (int(self.list_board[row][col]),None)
+        else:
+            return (int(self.list_board[row][col]),int(self.list_board[row + 2][col]))
+
         pass
     
-  #  def adjacent_horizontal_numbers(self, row: int, col: int) -> (int, int):
+    def adjacent_horizontal_numbers(self, row: int, col: int) -> (int, int):
         """ Devolve os valores imediatamente à esquerda e à direita, 
         respectivamente. """
-        # TODO
+        if (col == 0):
+            return (None, int(self.list_board[row+1][col+1]))
+        elif (col == self.size-1):
+            return (int(self.list_board[row+1][col - 1]),None)
+        else:
+            return (int(self.list_board[row+1][col-1]),int(self.list_board[row+1][col+1]))
         pass
     
     @staticmethod    
@@ -61,11 +86,9 @@ class Board:
                 for x in board_line:
                     list.append(x)
                 list_board.append(list)
-        for row in list_board:
-            print (row )
 
-        Board(list_board, list_board[0][0])
-        return Board
+        bd = Board(list_board, int(list_board[0][0]))
+        return bd
 
     # TODO: outros metodos da classe
 
@@ -106,5 +129,9 @@ class Numbrix(Problem):
 
 
 if __name__ == "__main__":
-    Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/test.txt")    
+    bds = Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/test.txt")   
+    print(bds.get_number(2,2))
+    print(bds.adjacent_vertical_numbers(2,2))
+    print(bds.adjacent_horizontal_numbers(2,2))
+    
     pass
