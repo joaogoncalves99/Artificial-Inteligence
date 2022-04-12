@@ -90,8 +90,6 @@ class Board:
         bd = Board(list_board, int(list_board[0][0]))
         return bd
 
-    # TODO: outros metodos da classe
-
 
 class Numbrix(Problem):
     def __init__(self, board: Board):
