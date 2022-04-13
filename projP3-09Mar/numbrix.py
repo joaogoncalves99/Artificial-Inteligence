@@ -7,6 +7,7 @@
 # 00000 Nome2
 
 import rlcompleter
+from socket import if_indextoname
 import sys
 from search import Problem, Node, astar_search, breadth_first_tree_search, depth_first_tree_search, greedy_search, recursive_best_first_search
 
@@ -54,11 +55,11 @@ class Board:
         """ Devolve os valores imediatamente abaixo e acima, 
         respectivamente. """
         if (col == 0):
-            return (None, int(self.list_board[row][col+1]))
+            return (int(self.list_board[row+1][col]),None)
         elif (col == self.size-1):
-            return (int(self.list_board[row][col]),None)
+            return (None,int(self.list_board[row][col]))
         else:
-            return (int(self.list_board[row][col]),int(self.list_board[row + 2][col]))
+            return (int(self.list_board[row + 2][col]),int(self.list_board[row][col]))
 
         pass
     
@@ -92,6 +93,15 @@ class Board:
 
     # TODO: outros metodos da classe
 
+    def to_string(self):
+        aux = ""
+        for x in self.list_board:
+            if(x != self.list_board[- len(self.list_board)]):
+                for y in x:
+                    aux = aux + y + "\t"
+                if(x!= self.list_board[-1]):
+                    aux = aux + "\n"
+        return aux
 
 class Numbrix(Problem):
     def __init__(self, board: Board):
@@ -130,8 +140,10 @@ class Numbrix(Problem):
 
 if __name__ == "__main__":
     bds = Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/test.txt")   
-    print(bds.get_number(2,2))
+    print("Initial:\n{}".format(bds.to_string()))
     print(bds.adjacent_vertical_numbers(2,2))
     print(bds.adjacent_horizontal_numbers(2,2))
-    
+    print(bds.adjacent_vertical_numbers(1,1))
+    print(bds.adjacent_horizontal_numbers(1,1)) 
+        
     pass
