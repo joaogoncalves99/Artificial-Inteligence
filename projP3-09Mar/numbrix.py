@@ -54,24 +54,25 @@ class Board:
     def adjacent_vertical_numbers(self, row: int, col: int) -> (int, int):
         """ Devolve os valores imediatamente abaixo e acima, 
         respectivamente. """
-        if (col == 0):
-            return (int(self.list_board[row+1][col]),None)
-        elif (col == self.size-1):
-            return (None,int(self.list_board[row][col]))
+        if (row == 0):
+            return ((self.list_board[row+1][col]),None)
+        elif (row == self.size-1):
+            return (None,(self.list_board[row][col]))
         else:
-            return (int(self.list_board[row + 2][col]),int(self.list_board[row][col]))
+            print(self.list_board[row + 2][col])
+            print(self.list_board[row][col])            
+            return ((self.list_board[row + 2][col]),(self.list_board[row][col]))
 
-        pass
     
     def adjacent_horizontal_numbers(self, row: int, col: int) -> (int, int):
         """ Devolve os valores imediatamente à esquerda e à direita, 
         respectivamente. """
         if (col == 0):
-            return (None, int(self.list_board[row+1][col+1]))
+            return (None, (self.list_board[row+1][col+1]))
         elif (col == self.size-1):
-            return (int(self.list_board[row+1][col - 1]),None)
+            return ((self.list_board[row+1][col - 1]),None)
         else:
-            return (int(self.list_board[row+1][col-1]),int(self.list_board[row+1][col+1]))
+            return ((self.list_board[row+1][col-1]),(self.list_board[row+1][col+1]))
         pass
     
     @staticmethod    
@@ -85,7 +86,7 @@ class Board:
                 board_line = line.split()
                 list = []
                 for x in board_line:
-                    list.append(x)
+                    list.append(int(x))
                 list_board.append(list)
 
         bd = Board(list_board, int(list_board[0][0]))
@@ -98,7 +99,7 @@ class Board:
         for x in self.list_board:
             if(x != self.list_board[- len(self.list_board)]):
                 for y in x:
-                    aux = aux + y + "\t"
+                    aux = aux + str(y) + "\t"
                 if(x!= self.list_board[-1]):
                     aux = aux + "\n"
         return aux
@@ -114,15 +115,20 @@ class Numbrix(Problem):
         """ Retorna uma lista de ações que podem ser executadas a
         partir do estado passado como argumento. """
         #print(any("6" in sublist for sublist in state.board.get_list()))
-        ret = [] #Lista que contem tuplo (X,Y,NovoNumero)
-        for i in state.board.get_list():
-            for j in i:
-                if(j == "0"):
+        ret = [] #Lista que contem tuplo (NovoNumero,X,Y)
+        size = state.board.get_size()
+        for i in range(state.board.get_size()):     
+            for j in range(state.board.get_size()):
+                if(state.board.get_number(i,j) == 0):
                     continue    
                 else:
+                    print("i=",i)
+                    print("j=",j)
+                    print( state.board.adjacent_vertical_numbers(2,1))
                     vert_adj = state.board.adjacent_vertical_numbers(i,j)
                     hori_adj = state.board.adjacent_horizontal_numbers(i,j)
-        
+        x = state.board.adjacent_vertical_numbers(2,2)
+        print(x)
         
         pass
 
@@ -150,13 +156,14 @@ class Numbrix(Problem):
 
 
 if __name__ == "__main__":
-    bds = Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/test.txt")   
+    #/home/fabokitas/IA/Projeto/IA-2022/projP3-09Mar/test.txt
+    bds = Board.parse_instance("/home/fabokitas/IA/Projeto/IA-2022/projP3-09Mar/test.txt")   
     """print("Initial:\n", bds.to_string(), sep="")
     print(bds.adjacent_vertical_numbers(2,2))
     print(bds.adjacent_horizontal_numbers(2,2))
     print(bds.adjacent_vertical_numbers(1,1))
-    print(bds.adjacent_horizontal_numbers(1,1)) """
-    print("Novas Cenas")
+    print(bds.adjacent_horizontal_numbers(1,1))
+    print("Novas Cenas")"""
     problem = Numbrix(bds)
     initial_state = NumbrixState(bds)
     print(initial_state.board.get_number(2,2))
