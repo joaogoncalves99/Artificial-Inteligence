@@ -34,16 +34,16 @@ class Board:
         self.size = size
 
     def get_list(self):
-        return self._list_board
+        return self.list_board
 
     def set_list(self, x):
-        self._list_board =x
+        self.list_board =x
 
     def get_size(self):
-        return self._size
+        return self.size
 
     def set_size(self,x):
-        self._size=x
+        self.size=x
 
     def get_number(self, row: int, col: int) -> int:
         """ Devolve o valor na respetiva posição do tabuleiro. """
@@ -106,13 +106,24 @@ class Board:
 class Numbrix(Problem):
     def __init__(self, board: Board):
         """ O construtor especifica o estado inicial. """
-        # TODO
+        initial_state=NumbrixState(board)
+        super().__init__(initial_state)
         pass
 
     def actions(self, state: NumbrixState):
         """ Retorna uma lista de ações que podem ser executadas a
         partir do estado passado como argumento. """
-        # TODO
+        #print(any("6" in sublist for sublist in state.board.get_list()))
+        ret = [] #Lista que contem tuplo (X,Y,NovoNumero)
+        for i in state.board.get_list():
+            for j in i:
+                if(j == "0"):
+                    continue    
+                else:
+                    vert_adj = state.board.adjacent_vertical_numbers(i,j)
+                    hori_adj = state.board.adjacent_horizontal_numbers(i,j)
+        
+        
         pass
 
     def result(self, state: NumbrixState, action):
@@ -140,10 +151,15 @@ class Numbrix(Problem):
 
 if __name__ == "__main__":
     bds = Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/test.txt")   
-    print("Initial:\n{}".format(bds.to_string()))
+    """print("Initial:\n", bds.to_string(), sep="")
     print(bds.adjacent_vertical_numbers(2,2))
     print(bds.adjacent_horizontal_numbers(2,2))
     print(bds.adjacent_vertical_numbers(1,1))
-    print(bds.adjacent_horizontal_numbers(1,1)) 
+    print(bds.adjacent_horizontal_numbers(1,1)) """
+    print("Novas Cenas")
+    problem = Numbrix(bds)
+    initial_state = NumbrixState(bds)
+    print(initial_state.board.get_number(2,2))
+    problem.actions(initial_state)
         
     pass
