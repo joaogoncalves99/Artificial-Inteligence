@@ -223,7 +223,18 @@ class Numbrix(Problem):
         'state' passado como argumento. A ação a executar deve ser uma
         das presentes na lista obtida pela execução de 
         self.actions(state). """
-        # TODO
+        #Action (Tuplo(novo numero, X,Y))
+        size = state.board.get_size()
+        action_size = len(action)
+        for h in range(action_size):
+            new_number = action[h][0]
+            x = action[h][1]
+            y = action[h][2]  
+            for i in range(size):
+                for j in range(size):
+                    if((i == x) and j == y):
+                        state.board.get_list()[i + 1][j] = new_number
+        return state.board.get_list()
         pass
 
     def goal_test(self, state: NumbrixState):
@@ -274,5 +285,8 @@ if __name__ == "__main__":
     initial_state = NumbrixState(bds)
     #print(initial_state.board.get_number(2,2))
     #print(problem.goal_test(initial_state))
-    problem.actions(initial_state)
+    #problem.actions(initial_state)
+    mudanca = [(1,2,2)]
+    print(problem.result(initial_state,mudanca))
+
     pass
