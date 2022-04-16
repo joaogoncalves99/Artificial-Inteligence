@@ -9,6 +9,7 @@
 import rlcompleter
 from socket import if_indextoname
 import sys
+from unicodedata import numeric
 from search import Problem, Node, astar_search, breadth_first_tree_search, depth_first_tree_search, greedy_search, recursive_best_first_search
 
 
@@ -55,12 +56,10 @@ class Board:
         """ Devolve os valores imediatamente abaixo e acima, 
         respectivamente. """
         if (row == 0):
-            return ((self.list_board[row+1][col]),None)
+            return ((self.list_board[row+2][col]),None)
         elif (row == self.size-1):
             return (None,(self.list_board[row][col]))
-        else:
-            print(self.list_board[row + 2][col])
-            print(self.list_board[row][col])            
+        else:           
             return ((self.list_board[row + 2][col]),(self.list_board[row][col]))
 
     
@@ -117,19 +116,19 @@ class Numbrix(Problem):
         #print(any("6" in sublist for sublist in state.board.get_list()))
         ret = [] #Lista que contem tuplo (NovoNumero,X,Y)
         size = state.board.get_size()
+        exists = [0 for j in range(size**2 + 1)] #Primeiro valor vai ser sempre 0 para facilitar contagem
         for i in range(state.board.get_size()):     
             for j in range(state.board.get_size()):
                 if(state.board.get_number(i,j) == 0):
                     continue    
                 else:
-                    print("i=",i)
-                    print("j=",j)
-                    print( state.board.adjacent_vertical_numbers(2,1))
+                    number = state.board.get_number(i,j)
+                    exists[number] = 1
                     vert_adj = state.board.adjacent_vertical_numbers(i,j)
-                    hori_adj = state.board.adjacent_horizontal_numbers(i,j)
-        x = state.board.adjacent_vertical_numbers(2,2)
-        print(x)
+                    hori_adj = state.board.adjacent_horizontal_numbers(i,j)   
         
+             
+
         pass
 
     def result(self, state: NumbrixState, action):
@@ -144,7 +143,29 @@ class Numbrix(Problem):
         """ Retorna True se e só se o estado passado como argumento é
         um estado objetivo. Deve verificar se todas as posições do tabuleiro 
         estão preenchidas com uma sequência de números adjacentes. """
-        # TODO
+        aux = []
+        adj=[]
+        size = state.board.get_size()
+        max = size**2
+        for i in range(size):
+            for j in range(size):
+                number = state.board.get_number(i,j)
+                vert_adj_lower = state.board.adjacent_vertical_numbers(i,j)[0]
+                hori_adj_left = state.board.adjacent_horizontal_numbers(i,j)[0]
+                vert_adj_upper = state.board.adjacent_vertical_numbers(i,j)[1]
+                hori_adj_right = state.board.adjacent_horizontal_numbers(i,j)[1]
+                lower = number - 1
+                upper = number + 1
+                adj = [vert_adj_lower,vert_adj_upper,hori_adj_left,hori_adj_right]
+                if(number == 0):
+                    return False
+                if((number == max and not(lower in adj)) or (number == 1 and not(upper in adj)) or 
+                    ((max > number > 1)and not(lower in adj and upper in adj))):
+                    return False
+                if number in aux:
+                    return False
+                aux.append(number)
+        return True
         pass
 
     def h(self, node: Node):
@@ -157,7 +178,7 @@ class Numbrix(Problem):
 
 if __name__ == "__main__":
     #/home/fabokitas/IA/Projeto/IA-2022/projP3-09Mar/test.txt
-    bds = Board.parse_instance("/home/fabokitas/IA/Projeto/IA-2022/projP3-09Mar/test.txt")   
+    bds = Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/test.txt")   
     """print("Initial:\n", bds.to_string(), sep="")
     print(bds.adjacent_vertical_numbers(2,2))
     print(bds.adjacent_horizontal_numbers(2,2))
@@ -166,7 +187,7 @@ if __name__ == "__main__":
     print("Novas Cenas")"""
     problem = Numbrix(bds)
     initial_state = NumbrixState(bds)
-    print(initial_state.board.get_number(2,2))
-    problem.actions(initial_state)
-        
+    #print(initial_state.board.get_number(2,2))
+    #problem.actions(initial_state)
+    print(problem.goal_test(initial_state))
     pass
