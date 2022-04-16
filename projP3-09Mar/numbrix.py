@@ -119,20 +119,19 @@ class Numbrix(Problem):
         present_numbers = self.get_present(state)
         ret = [] #Lista que contem tuplo (NovoNumero,X,Y)
         size = state.board.get_size()
-        exists = [0 for j in range(size**2 + 1)] #Primeiro valor vai ser sempre 0 para facilitar contagem
         for i in range(state.board.get_size()):     
             for j in range(state.board.get_size()):
                 if(state.board.get_number(i,j) == 0):
                     continue    
                 else:
-                    current = state.board.get_number(i,j)
-                    vert_adj = state.board.adjacent_vertical_numbers(i,j)
                     free_vert = []
                     free_hori = []
+                    current = state.board.get_number(i,j)
+                    vert_adj = state.board.adjacent_vertical_numbers(i,j)
                     if (vert_adj[0] == 0):
-                        free_vert.append((i-1,j))
-                    if (vert_adj[1] == 0):
                         free_vert.append((i+1,j))
+                    if (vert_adj[1] == 0):
+                        free_vert.append((i-1,j))
                     hori_adj = state.board.adjacent_horizontal_numbers(i,j)
                     if (hori_adj[0] == 0):
                         free_hori.append((i,j-1))
@@ -142,19 +141,18 @@ class Numbrix(Problem):
                     if (current<size*size):
                         if (not(self.is_on_list(current+1, present_numbers))):
                             flag = False
-                            for coord in free_vert:
-                                #checks if the number above is already adjacent to the position we're checking
-                                if (current<size*size-1):
+                            if ((current<size*size-1) and (self.is_on_list(current + 2,present_numbers))):
+                                for coord in free_vert:
+                                    #checks if the number above is already adjacent to the position we're checking
                                     if (self.is_on_list(current+2,state.board.adjacent_vertical_numbers(coord[0],coord[1])) or 
                                         self.is_on_list(current+2,state.board.adjacent_horizontal_numbers(coord[0],coord[1]))):
-                                        ret.append((current+1, coord[0], coord[1]))
+                                        ret.append(( coord[0], coord[1], current+1))
                                         flag = True
-                            for coord in free_hori:
-                                #checks if the number above is already adjacent to the position we're checking
-                                if (current<size*size-1):
+                                for coord in free_hori:
+                                    #checks if the number above is already adjacent to the position we're checking
                                     if (self.is_on_list(current+2,state.board.adjacent_vertical_numbers(coord[0],coord[1])) or 
                                         self.is_on_list(current+2,state.board.adjacent_horizontal_numbers(coord[0],coord[1]))):
-                                        ret.append((current+1, coord[0], coord[1]))
+                                        ret.append(( coord[0], coord[1],current+1))
                                         flag = True
                             if (not(flag)):
                                 #else checks if there is a free spot for the number above
@@ -163,44 +161,45 @@ class Numbrix(Problem):
                                     if (current<size*size-1):
                                         if (self.is_on_list(0,state.board.adjacent_vertical_numbers(coord[0],coord[1])) or 
                                             self.is_on_list(0,state.board.adjacent_horizontal_numbers(coord[0],coord[1]))):
-                                            ret.append((current+1, coord[0], coord[1]))
+                                            ret.append((coord[0], coord[1],current+1))
                                 for coord in free_hori:
                                     #checks if the number above is already adjacent to the position we're checking
                                     if (current<size*size-1):
                                         if (self.is_on_list(0,state.board.adjacent_vertical_numbers(coord[0],coord[1])) or 
                                             self.is_on_list(0,state.board.adjacent_horizontal_numbers(coord[0],coord[1]))):
-                                            ret.append((current+1, coord[0], coord[1]))
+                                            ret.append((coord[0], coord[1], current+1))
                     if (current>1):
                         if (not(self.is_on_list(current - 1, present_numbers))):
                             flag = False
-                            for coord in free_vert:
-                                #checks if the number above is already adjacent to the position we're checking
-                                if (current>2):
-                                    if (self.is_on_list(current-2,state.board.adjacent_vertical_numbers(coord[0],coord[1])) or 
-                                        self.is_on_list(current-2,state.board.adjacent_horizontal_numbers(coord[0],coord[1]))):
-                                        ret.append((current-1, coord[0], coord[1]))
-                                        flag = True
-                            for coord in free_hori:
-                                #checks if the number above is already adjacent to the position we're checking
-                                if (current<size*size-1):
-                                    if (self.is_on_list(current-2,state.board.adjacent_vertical_numbers(coord[0],coord[1])) or 
-                                        self.is_on_list(current-2,state.board.adjacent_horizontal_numbers(coord[0],coord[1]))):
-                                        ret.append((current-1, coord[0], coord[1]))
-                                        flag = True
+                            if ((current>2) and (self.is_on_list(current -2,present_numbers))):
+                                for coord in free_vert:
+                                    #checks if the number above is already adjacent to the position we're checking
+                                    if (current>2):
+                                        if (self.is_on_list(current-2,state.board.adjacent_vertical_numbers(coord[0],coord[1])) or 
+                                            self.is_on_list(current-2,state.board.adjacent_horizontal_numbers(coord[0],coord[1]))):
+                                            ret.append((coord[0], coord[1],current-1))
+                                            flag = True
+                                for coord in free_hori:
+                                    #checks if the number above is already adjacent to the position we're checking
+                                    if (current>2):
+                                        if (self.is_on_list(current-2,state.board.adjacent_vertical_numbers(coord[0],coord[1])) or 
+                                            self.is_on_list(current-2,state.board.adjacent_horizontal_numbers(coord[0],coord[1]))):
+                                            ret.append((coord[0], coord[1],current-1))
+                                            flag = True
                             if (not(flag)):
                                 #else checks if there is a free spot for the number above
                                 for coord in free_vert:
                                     #checks if the number above is already adjacent to the position we're checking
-                                    if (current<size*size-1):
+                                    if (current>2):
                                         if (self.is_on_list(0,state.board.adjacent_vertical_numbers(coord[0],coord[1])) or 
                                             self.is_on_list(0,state.board.adjacent_horizontal_numbers(coord[0],coord[1]))):
-                                            ret.append((current+1, coord[0], coord[1]))
+                                            ret.append((coord[0], coord[1],current-1))
                                 for coord in free_hori:
                                     #checks if the number above is already adjacent to the position we're checking
-                                    if (current<size*size-1):
+                                    if (current>2):
                                         if (self.is_on_list(0,state.board.adjacent_vertical_numbers(coord[0],coord[1])) or 
                                             self.is_on_list(0,state.board.adjacent_horizontal_numbers(coord[0],coord[1]))):
-                                            ret.append((current+1, coord[0], coord[1]))
+                                            ret.append((coord[0], coord[1],current-1))
         return ret
 
     def is_on_list(self, number,list):
@@ -272,7 +271,7 @@ class Numbrix(Problem):
 
 if __name__ == "__main__":
     #/home/fabokitas/IA/Projeto/IA-2022/projP3-09Mar/test.txt
-    bds = Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/test.txt")   
+    bds = Board.parse_instance("/home/fabokitas/IA/Projeto/IA-2022/projP3-09Mar/tests_final_public/input1.txt")   
     """print("Exemplo 1)
     print("Initial:\n", bds.to_string(), sep="")
     print(bds.adjacent_vertical_numbers(2,2))
@@ -293,8 +292,10 @@ if __name__ == "__main__":
     """
     print("Exemplo 3")
     problem = Numbrix(bds)
+    test = depth_first_tree_search(problem)
+    print(test.state.board.to_string())
     # Criar um estado com a configuração inicial:
-    s0 = NumbrixState(bds)
+    """ s0 = NumbrixState(bds)
     print("Initial:\n", s0.board.to_string(), sep="")
     # Aplicar as ações que resolvem a instância
     s1 = problem.result(s0, (2, 2, 1))
@@ -306,6 +307,5 @@ if __name__ == "__main__":
     s7 = problem.result(s6, (0, 0, 9))
     # Verificar se foi atingida a solução
     print("Is goal?", problem.goal_test(s7))
-    print("Solution:\n", s7.board.to_string(), sep="")
-  
+    print("Solution:\n", s7.board.to_string(), sep="")"""
     pass
