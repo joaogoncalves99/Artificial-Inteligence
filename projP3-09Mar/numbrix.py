@@ -2,9 +2,9 @@
 # Devem alterar as classes e funções neste ficheiro de acordo com as instruções do enunciado.
 # Além das funções e classes já definidas, podem acrescentar outras que considerem pertinentes.
 
-# Grupo 00:
-# 00000 Nome1
-# 00000 Nome2
+# Grupo 037:
+# 93918 João Gonçalves
+# 95571 Fábio Jerónimo
 
 from operator import truediv
 import rlcompleter
@@ -13,7 +13,6 @@ import sys
 from unicodedata import numeric
 from numpy import true_divide
 from search import Problem, Node, astar_search, breadth_first_tree_search, depth_first_tree_search, greedy_search, recursive_best_first_search
-
 
 class NumbrixState:
     state_id = 0
@@ -102,8 +101,8 @@ class Board:
                 for y in x:
                     aux = aux + str(y) + "\t"
                 if(x!= self.list_board[-1]):
-                    aux = aux + "\n"
-        return aux
+                    aux = aux[:-1] + "\n"
+        return aux[:-1]
 
 class Numbrix(Problem):
     def __init__(self, board: Board):
@@ -123,6 +122,7 @@ class Numbrix(Problem):
         coords_lowest = (size+1,size +1)
         free_vert = []
         free_hori = []
+        
         #Find the lowest number on Board and the coords of it
         for i in range(state.board.get_size()):
             for j in range(state.board.get_size()):
@@ -139,8 +139,7 @@ class Numbrix(Problem):
             free_hori.append((coords_lowest[0],coords_lowest[1]-1))
         if (hori_adj[1] == 0):
                 free_hori.append((coords_lowest[0],coords_lowest[1]+1))
-        
-    
+          
         #Se o lowest n for um anda até ao 1
         if(lowest != 1):
             current = lowest
@@ -210,6 +209,7 @@ class Numbrix(Problem):
                     free_hori.append((coords_lowest[0],coords_lowest[1]-1))
                 if (hori_adj[1] == 0):
                         free_hori.append((coords_lowest[0],coords_lowest[1]+1))
+
             #checks if the number immediately above current is present on the board
             if (current<size*size):
                 if (not(self.is_on_list(current+1, present_numbers))):
@@ -250,8 +250,6 @@ class Numbrix(Problem):
                             else:
                                 if ( not (coord[0], coord[1], current+1) in ret):
                                     ret.append((coord[0], coord[1],current+1))
-
-                    
         return ret
 
     def is_on_list(self, number,list):
@@ -337,10 +335,10 @@ class Numbrix(Problem):
 
 if __name__ == "__main__":
 
-    #filename= sys.argv[1]
-    #board = Board.parse_instance(filename)
-    board = Board.parse_instance("/home/fabokitas/IA/Projeto/IA-2022/projP3-09Mar/tests_final_public/input7.txt")
-    #board = Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/tests_final_public/input1.txt")
+    filename= sys.argv[1]
+    board = Board.parse_instance(filename)
+    #board = Board.parse_instance("/home/fabokitas/IA/Projeto/IA-2022/projP3-09Mar/tests_final_public/input7.txt")
+    #board = Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/tests_final_public/input2.txt")
     problem= Numbrix(board)
     goal_node = depth_first_tree_search(problem)
     print(goal_node.state.board.to_string())
