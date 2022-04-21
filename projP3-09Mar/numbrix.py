@@ -123,6 +123,34 @@ class Numbrix(Problem):
         free_vert = []
         free_hori = []
         
+        #Verify if the current board is solvable
+        for i in range(state.board.get_size()):
+            for j in range(state.board.get_size()):
+                current = state.board.get_number(i,j)
+                if (current!=0):
+                    adj = []
+                    adj.append(state.board.adjacent_vertical_numbers(i,j)[0])
+                    adj.append(state.board.adjacent_vertical_numbers(i,j)[1])
+                    adj.append(state.board.adjacent_horizontal_numbers(i,j)[0])
+                    adj.append(state.board.adjacent_horizontal_numbers(i,j)[1])
+                    if (adj.count(0)>=2):
+                        continue
+                    else:
+                        if (adj.count(0) == 1):
+                            if not(current == 1 or current == size * size):
+                                if not(self.is_on_list(current+1,adj) or self.is_on_list(current-1,adj)):
+                                    return ret
+                        if (adj.count(0) == 0):
+                            if (current == 1):
+                                if not(self.is_on_list(current+1,adj)):
+                                    return ret
+                            elif (current == size * size):
+                                if not(self.is_on_list(current-1,adj)):
+                                    return ret
+                            else:
+                                if not(self.is_on_list(current-1,adj) and self.is_on_list(current+1,adj)):
+                                    return ret
+
         #Find the lowest number on Board and the coords of it
         for i in range(state.board.get_size()):
             for j in range(state.board.get_size()):
@@ -329,7 +357,8 @@ class Numbrix(Problem):
 
     def h(self, node: Node):
         """ Função heuristica utilizada para a procura A*. """
-        # TODO
+        return sum(s != g for (s, g) in zip(node.state, self.goal))
+
         pass
 
 
@@ -344,3 +373,4 @@ if __name__ == "__main__":
     print(goal_node.state.board.to_string())
     
     pass
+   
