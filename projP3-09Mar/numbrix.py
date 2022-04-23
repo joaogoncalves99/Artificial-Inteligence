@@ -6,6 +6,8 @@
 # 93918 João Gonçalves
 # 95571 Fábio Jerónimo
 
+import datetime
+import _pickle as pickle
 from operator import truediv
 import rlcompleter
 from socket import if_indextoname
@@ -305,26 +307,13 @@ class Numbrix(Problem):
         x = action[0]
         y = action[1]  
         new_number = action[2]
-        new_list = []
-        for i in range(size+1):
-            lst = []
-            for j in range(size):
-                if i == 0 and j == 0:
-                    lst.append(state.board.get_list()[i][j])
-                    break
-                else:
-                    lst.append(state.board.get_list()[i][j])
-            new_list.append(lst)
+        state_new = pickle.loads(pickle.dumps(state,-1))
         
-        bd = Board(new_list, int(new_list[0][0]))
-        new_state = NumbrixState(bd)
-
         for i in range(size):
             for j in range(size):
                 if((i == x) and j == y):
-                    new_state.board.get_list()[i + 1][j] = new_number
-        return new_state
-        pass
+                    state_new.board.get_list()[i + 1][j] = new_number
+        return state_new
 
     def goal_test(self, state: NumbrixState):
         """ Retorna True se e só se o estado passado como argumento é
@@ -363,14 +352,12 @@ class Numbrix(Problem):
 
 
 if __name__ == "__main__":
-
     filename= sys.argv[1]
     board = Board.parse_instance(filename)
-    #board = Board.parse_instance("/home/fabokitas/IA/Projeto/IA-2022/projP3-09Mar/tests_final_public/input7.txt")
+    #board = Board.parse_instance("/home/fabokitas/IA/Projeto/IA-2022/projP3-09Mar/tests_final_public/input8.txt")
     #board = Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/tests_final_public/input2.txt")
     problem= Numbrix(board)
     goal_node = depth_first_tree_search(problem)
     print(goal_node.state.board.to_string())
-    
     pass
    
