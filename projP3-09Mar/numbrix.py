@@ -14,7 +14,8 @@ from socket import if_indextoname
 import sys
 from unicodedata import numeric
 from numpy import true_divide
-from search import Problem, Node, astar_search, breadth_first_tree_search, depth_first_tree_search, greedy_search, recursive_best_first_search
+from search import Problem, Node, astar_search, breadth_first_tree_search, depth_first_tree_search, greedy_search, recursive_best_first_search, InstrumentedProblem,compare_searchers
+
 
 class NumbrixState:
     state_id = 0
@@ -37,6 +38,7 @@ class Board:
         self.list_board = list_board
         self.size = size
         self.new_number = new_number
+        self.empty_spaces = 0
 
 
     def get_list(self):
@@ -60,8 +62,6 @@ class Board:
     def get_number(self, row: int, col: int) -> int:
         """ Devolve o valor na respetiva posição do tabuleiro. """
         return self.list_board[row + 1][col]
-
-        
     
     def adjacent_vertical_numbers(self, row: int, col: int) -> (int, int):
         """ Devolve os valores imediatamente abaixo e acima, 
@@ -335,6 +335,20 @@ class Numbrix(Problem):
                 if((i == x) and j == y):
                     state_new.board.get_list()[i + 1][j] = new_number
                     state_new.board.set_new_number(new_number)
+
+        adj_numbers = state.board.adjacent_horizontal_numbers(x,y) + state.board.adjacent_vertical_numbers(x,y)
+ 
+        if(adj_numbers.count(0) == 0):
+            state_new.board.empty_spaces += -4
+        elif(adj_numbers.count(0) == 1):
+            state_new.board.empty_spaces += -2 + adj_numbers.count(None)
+        elif(adj_numbers.count(0) == 2):
+            state_new.board.empty_spaces += 0 + adj_numbers.count(None)
+        elif(adj_numbers.count(0) == 3):
+            state_new.board.empty_spaces += 2 + adj_numbers.count(None)
+        elif(adj_numbers.count(0) == 4):
+            state_new.board.empty_spaces += 4 
+
         return state_new
 
     def goal_test(self, state: NumbrixState):
@@ -368,18 +382,15 @@ class Numbrix(Problem):
 
     def h(self, node: Node):
         """ Função heuristica utilizada para a procura A*. """
-        return sum(s != g for (s, g) in zip(node.state, self.goal))
-
+        return node.state.board.empty_spaces
         pass
-
 
 if __name__ == "__main__":
     filename=sys.argv[1]
     board = Board.parse_instance(filename)
-    #board = Board.parse_instance("/home/fabokitas/IA/Projeto/IA-2022/projP3-09Mar/tests_final_public/input1.txt")
-    #board = Board.parse_instance("/Users/joaogoncalves/Desktop/IA/IA-2022/projP3-09Mar/tests_final_public/input2.txt")
     problem= Numbrix(board)
     goal_node = depth_first_tree_search(problem)
+  
     print(goal_node.state.board.to_string())
     pass
    
