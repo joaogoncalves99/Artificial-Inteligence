@@ -1,2 +1,4 @@
-# IA-2022
+# Artificial Inteligence
 Projeto da Disciplina de IA
+
+Grade 17/20
