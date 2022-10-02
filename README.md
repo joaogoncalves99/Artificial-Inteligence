@@ -1,4 +1,4 @@
 # Artificial Inteligence
 Projeto da Disciplina de IA
 
-Grade 17/20
+Grade 19/20
